@@ -2,19 +2,25 @@ extends "res://Data/entity.gd"
 
 const VEL = 70
 var attack = false
+var sword = 1
+var posi
 
 func _physics_process(delta):
-	control_loop()
-	movement_loop()
-	spritedir_loop()
-	_setSpeed(VEL)
+	
+	if !attack:
+		control_loop()
+		movement_loop()
+		spritedir_loop()
+		_setSpeed(VEL)
+		$Sword/sword.set_disabled(true)
 	
 	
 	if movedir != Vector2(0,0):
 		anim_switch("walk")
 	elif attack:
-		movedir = Vector2(0,0)
+		print(posi)
 		anim_switch("attack")
+		$Sword/sword.set_disabled(false)
 		yield($anim,"animation_finished")
 		attack = false
 	else:
@@ -35,5 +41,15 @@ func control_loop():
 	if ATTACK and movedir == Vector2(0,0):
 		attack = true
 	
+
+func _on_HitBox_body_entered(body):
+	print("HitBox")
+	pass # Replace with function body.
+
+func _on_Sword_body_entered(body):
+	if body.has_method("_dano"):
+		body._dano(sword)
 	
-	
+	pass # Replace with function body.
+func _posicao(pos):
+	posi = pos
